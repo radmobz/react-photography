@@ -4,7 +4,7 @@ import Gallery from "react-photo-gallery";
 import SelectedImage from "./SelectedImage";
 import JSZip from 'jszip';
 import JSZipUtils from 'jszip-utils'
-import {saveAs} from 'file-saver'
+import { saveAs } from 'file-saver'
 import image1 from '../images/image1.jpg'
 import image2 from '../images/image2.jpg'
 import image3 from '../images/image3.jpg'
@@ -17,51 +17,50 @@ var count = 0;
 var zipFilename = "zipFilename.zip";
 
 const photos = [
-  {
-    name: 'image1.jpg',
-    src: image1,
-    width: 4,
-    height: 3
-  },
-  {
-    name: 'image2.jpg',
-    src: image2,
-    width: 4,
-    height: 3
-  },
-  {
-    name: 'image3.jpg',
-    src: image3,
-    width: 4,
-    height: 3
-  },
-  {
-    name: 'image4.jpg',
-    src: image4,
-    width: 4,
-    height: 3
-  },
-  {
-    name: 'image5.jpg',
-    src: image5,
-    width: 4,
-    height: 3
-  },
-  {
-    name: 'image6.jpg',
-    src: image6,
-    width: 4,
-    height: 3
-  }
 ];
 
 class Sample extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { photos: photos, selectAll: false };
+    this.state = { photos: photos, selectAll: false, base64: '' };
     this.selectPhoto = this.selectPhoto.bind(this);
     this.toggleSelect = this.toggleSelect.bind(this);
     this.download = this.download.bind(this);
+    
+  }
+  componentWillMount() {
+    const url = 'https://ged-api.herokuapp.com/v1/documents'
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => response.json())
+      .then(json => {
+
+        let photos = this.state.photos
+
+        json.values.map(values => {
+          const photo = {
+            name: values.values.name.value,
+            src: 'data:image/png;base64, ' + values.values.base64.value,
+            width: 4,
+            height: 3
+          }
+          photos.push(photo)
+        })
+        
+        console.log(photos)
+        
+        //photos[0].src = 'data:image/png;base64, ' + json.values.base64.value
+        this.setState({photos:photos})
+
+      })
+      .catch(function (error) {
+        console.log('erreur')
+      })
   }
   selectPhoto(event, obj) {
     let photos = this.state.photos;
@@ -103,6 +102,7 @@ class Sample extends React.Component {
 
   }
   render() {
+    if (this.state.photos.length > 0) {
     return (
       <div>
         <p>
@@ -122,6 +122,10 @@ class Sample extends React.Component {
         </p>
       </div>
     );
+  }
+  else {
+    return (<div></div>)
+  }
   }
 }
 

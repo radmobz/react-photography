@@ -10,7 +10,7 @@ import 'normalize.css';
 let store = createStore(userApp)
 
 hydrate(
-  <Provider  store={store}>
+  <Provider store={store}>
     <AppContainer>
       <App />
     </AppContainer>

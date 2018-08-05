@@ -944,10 +944,8 @@ D.activeIndex=e>=d?c:c+1}}else D.activeIndex=Math[b.visibilityFullFit?"ceil":"ro
     setTimeout(scroller, 0);
   });
 })(jQuery);
-/*-----------------------------------------------------------------------------------*/
-/*	19. SLIDE PORTFOLIO
-/*-----------------------------------------------------------------------------------*/
-jQuery(document).ready(function($){
+
+function slidePortfolio() {
 	var is_firefox = navigator.userAgent.indexOf('Firefox') > -1;
 
 	//open team-member bio
@@ -984,6 +982,13 @@ jQuery(document).ready(function($){
 			$('body').removeClass('overflow-hidden');
 		}
 	});
+}
+
+/*-----------------------------------------------------------------------------------*/
+/*	19. SLIDE PORTFOLIO
+/*-----------------------------------------------------------------------------------*/
+jQuery(document).ready(function($){
+	slidePortfolio()
 });
 /*-----------------------------------------------------------------------------------*/
 /*	20. FLICKR

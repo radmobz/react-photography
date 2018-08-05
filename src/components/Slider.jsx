@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
+import Shootings from './Shootings'
 
 export default class Slider extends Component {
     constructor(props) {
@@ -18,6 +19,15 @@ export default class Slider extends Component {
                         </div>
                     </div>
                 </div>
+                <div id="sticky-filter" className="sticky-filter dark-wrapper container">
+                    <ul>
+                        <li><a href="#mariage">Mariage</a></li>
+                        <li><a href="#grossesse">Grossesse</a></li>
+                        <li><a href="#naissance">Naissance</a></li>
+                        <li><a href="#enfants">Enfants / Famille</a></li>
+                    </ul>
+                </div>
+                <Shootings />
             </div>
         );
     }

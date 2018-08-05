@@ -1,4 +1,5 @@
-$(document).ready(function() {
+function reload() {
+
     'use strict';
     /*-----------------------------------------------------------------------------------*/
     /*	SCROLL NAVIGATION HIGHLIGHT
@@ -6,25 +7,25 @@ $(document).ready(function() {
     var headerWrapper = parseInt($('.navbar').height(), 10);
     var header_height = $('.navbar').height();
     var shrinked_header_height = 70;
-    var firstStyle=
-    {
-        'padding-top':''+shrinked_header_height+'px',
-        'margin-top':'-'+shrinked_header_height+'px'
-    };
+    var firstStyle =
+        {
+            'padding-top': '' + shrinked_header_height + 'px',
+            'margin-top': '-' + shrinked_header_height + 'px'
+        };
     $('.onepage section').css(firstStyle);
-    var secondStyle=
-    {
-      'padding-top':''+header_height+'px',
-      'margin-top':'-'+header_height+'px'
-    };
+    var secondStyle =
+        {
+            'padding-top': '' + header_height + 'px',
+            'margin-top': '-' + header_height + 'px'
+        };
     $('.onepage section:first-of-type').css(secondStyle);
     var offsetTolerance = -(header_height);
     //Detecting user's scroll
-    $(window).scroll(function() {
+    $(window).scroll(function () {
         //Check scroll position
         var scrollPosition = parseInt($(this).scrollTop(), 10);
         //Move trough each menu and check its position with scroll position then add current class
-        $('.onepage .navbar ul.navbar-nav a').each(function() {
+        $('.onepage .navbar ul.navbar-nav a').each(function () {
             var thisHref = $(this).attr('href');
             var thisTruePosition = parseInt($(thisHref).offset().top, 10);
             var thisPosition = thisTruePosition - headerWrapper - offsetTolerance;
@@ -47,10 +48,10 @@ $(document).ready(function() {
         instantlyCloseOthers: false,
         delay: 0
     }).dropdown();
-    $('.btn.responsive-menu').on('click', function() {
+    $('.btn.responsive-menu').on('click', function () {
         $(this).toggleClass('opn');
     });
-    $('.onepage .navbar .nav li a').on('click', function() {
+    $('.onepage .navbar .nav li a').on('click', function () {
         $('.navbar .navbar-collapse.in').collapse('hide');
         $('.btn.responsive-menu').removeClass('opn');
     });
@@ -58,29 +59,29 @@ $(document).ready(function() {
     /*-----------------------------------------------------------------------------------*/
 	/*	STICKY FILTER HIGHLIGHT
 	/*-----------------------------------------------------------------------------------*/
-		var stickyWrapper		= parseInt($('#sticky-filter').height(), 10);
-		var stickyOffsetTolerance	= 70;		
-		//Detecting user's scroll
-		$(window).scroll(function() {		
-			//Check scroll position
-			var stickyScrollPosition	= parseInt($(this).scrollTop(), 10);			
-			//Move trough each menu and check its position with scroll position then add current class
-			$('#sticky-filter a').each(function() {	
-				var stickyThisHref				= $(this).attr('href');
-				var stickyThisTruePosition	= parseInt($(stickyThisHref).offset().top, 10);
-				var stickyThisPosition 		= stickyThisTruePosition - stickyWrapper - stickyOffsetTolerance;				
-				if(stickyScrollPosition >= stickyThisPosition) {					
-					$('.current').removeClass('current');
-					$('#sticky-filter a[href='+ stickyThisHref +']').parent('li').addClass('current');					
-				}
-			});
-			//If we're at the bottom of the page, move pointer to the last section
-			var stickyBottomPage	= parseInt($(document).height(), 10) - parseInt($(window).height(), 10);			
-			if(stickyScrollPosition == stickyBottomPage || stickyScrollPosition >= stickyBottomPage) {			
-				$('.current').removeClass('current');
-				$('#sticky-filter a:last').parent('li').addClass('current');
-			}
-		});
+    var stickyWrapper = parseInt($('#sticky-filter').height(), 10);
+    var stickyOffsetTolerance = 70;
+    //Detecting user's scroll
+    $(window).scroll(function () {
+        //Check scroll position
+        var stickyScrollPosition = parseInt($(this).scrollTop(), 10);
+        //Move trough each menu and check its position with scroll position then add current class
+        $('#sticky-filter a').each(function () {
+            var stickyThisHref = $(this).attr('href');
+            var stickyThisTruePosition = parseInt($(stickyThisHref).offset().top, 10);
+            var stickyThisPosition = stickyThisTruePosition - stickyWrapper - stickyOffsetTolerance;
+            if (stickyScrollPosition >= stickyThisPosition) {
+                $('.current').removeClass('current');
+                $('#sticky-filter a[href=' + stickyThisHref + ']').parent('li').addClass('current');
+            }
+        });
+        //If we're at the bottom of the page, move pointer to the last section
+        var stickyBottomPage = parseInt($(document).height(), 10) - parseInt($(window).height(), 10);
+        if (stickyScrollPosition == stickyBottomPage || stickyScrollPosition >= stickyBottomPage) {
+            $('.current').removeClass('current');
+            $('#sticky-filter a:last').parent('li').addClass('current');
+        }
+    });
     /*-----------------------------------------------------------------------------------*/
     /*	LOCALSCROLL
 	/*-----------------------------------------------------------------------------------*/
@@ -88,12 +89,12 @@ $(document).ready(function() {
         hash: true
     });
     $('#sticky-filter ul').localScroll({
-	    offset: {top:-134, left:0}
+        offset: { top: -134, left: 0 }
     });
     /*-----------------------------------------------------------------------------------*/
 	/*	STICKY FILTER
 	/*-----------------------------------------------------------------------------------*/
-	$("#sticky-filter").sticky({ topSpacing: 70, className:"sfilter", responsiveBreakpoint: 0 });
+    $("#sticky-filter").sticky({ topSpacing: 70, className: "sfilter", responsiveBreakpoint: 0 });
     /*-----------------------------------------------------------------------------------*/
     /*	CUBE PORTFOLIO
     /*-----------------------------------------------------------------------------------*/
@@ -130,7 +131,7 @@ $(document).ready(function() {
         singlePageDeeplinking: true,
         singlePageInlineInFocus: true,
         offsetValue: 100,
-        singlePageInlineCallback: function(url, element) {
+        singlePageInlineCallback: function (url, element) {
             // to update singlePageInline content use the following method: this.updateSinglePageInline(yourContent)
             var t = this;
             $.ajax({
@@ -138,9 +139,9 @@ $(document).ready(function() {
                 type: 'GET',
                 dataType: 'html',
                 timeout: 10000
-            }).done(function(result) {
+            }).done(function (result) {
                 t.updateSinglePageInline(result);
-            }).fail(function() {
+            }).fail(function () {
                 t.updateSinglePageInline('AJAX Error! Please refresh the page!');
             });
         }
@@ -190,7 +191,7 @@ $(document).ready(function() {
         singlePageDeeplinking: true,
         singlePageInlineInFocus: true,
         offsetValue: 100,
-        singlePageInlineCallback: function(url, element) {
+        singlePageInlineCallback: function (url, element) {
             // to update singlePageInline content use the following method: this.updateSinglePageInline(yourContent)
             var t = this;
             $.ajax({
@@ -198,9 +199,9 @@ $(document).ready(function() {
                 type: 'GET',
                 dataType: 'html',
                 timeout: 10000
-            }).done(function(result) {
+            }).done(function (result) {
                 t.updateSinglePageInline(result);
-            }).fail(function() {
+            }).fail(function () {
                 t.updateSinglePageInline('AJAX Error! Please refresh the page!');
             });
         }
@@ -238,7 +239,7 @@ $(document).ready(function() {
         singlePageDeeplinking: true,
         singlePageInlineInFocus: true,
         offsetValue: 100,
-        singlePageInlineCallback: function(url, element) {
+        singlePageInlineCallback: function (url, element) {
             // to update singlePageInline content use the following method: this.updateSinglePageInline(yourContent)
             var t = this;
             $.ajax({
@@ -246,9 +247,9 @@ $(document).ready(function() {
                 type: 'GET',
                 dataType: 'html',
                 timeout: 10000
-            }).done(function(result) {
+            }).done(function (result) {
                 t.updateSinglePageInline(result);
-            }).fail(function() {
+            }).fail(function () {
                 t.updateSinglePageInline('AJAX Error! Please refresh the page!');
             });
         }
@@ -284,28 +285,28 @@ $(document).ready(function() {
         margin: 0
     });
     $('.blog-carousel').owlCarousel({
-	    items: 5,
-	    nav: true,
-	    navText: ['', ''],
-	    dots: false,
-	    loop: false,
-	    margin: 0,
-	    autoWidth: false,
-	    responsive: {
-	        0: {
-	            items: 1
-	        },
-	        600: {
-	            items: 2
-	        },
-	        1441: {
-	            items: 3
-	        },
-	        1921: {
-	            items: 4
-	        }
-	    }
-	});
+        items: 5,
+        nav: true,
+        navText: ['', ''],
+        dots: false,
+        loop: false,
+        margin: 0,
+        autoWidth: false,
+        responsive: {
+            0: {
+                items: 1
+            },
+            600: {
+                items: 2
+            },
+            1441: {
+                items: 3
+            },
+            1921: {
+                items: 4
+            }
+        }
+    });
     $('.clients').owlCarousel({
         autoplay: true,
         autoplayTimeout: 3000,
@@ -338,27 +339,27 @@ $(document).ready(function() {
     /*-----------------------------------------------------------------------------------*/
     /*	SWIPER
 	/*-----------------------------------------------------------------------------------*/
-    $('.swiper-container.gallery').each(function(){
-		  $(this).swiper({
-		    grabCursor: true,
-		    slidesPerView: 'auto',
-		    wrapperClass: 'swiper',
-		    slideClass: 'item',
-		    offsetPxBefore: 0,
-		    offsetPxAfter: 0
-		  });
-		
-		  var $swipers = $(this);
-		
-		$swipers.siblings('.arrow-left').on( "click", function(){
-		$swipers.data('swiper').swipeTo($swipers.data('swiper').activeIndex-1);
-		return false;
-		});
-		$swipers.siblings('.arrow-right').on( "click", function(){
-		$swipers.data('swiper').swipeTo($swipers.data('swiper').activeIndex+1);
-		return false;
-		});
-	});
+    $('.swiper-container.gallery').each(function () {
+        $(this).swiper({
+            grabCursor: true,
+            slidesPerView: 'auto',
+            wrapperClass: 'swiper',
+            slideClass: 'item',
+            offsetPxBefore: 0,
+            offsetPxAfter: 0
+        });
+
+        var $swipers = $(this);
+
+        $swipers.siblings('.arrow-left').on("click", function () {
+            $swipers.data('swiper').swipeTo($swipers.data('swiper').activeIndex - 1);
+            return false;
+        });
+        $swipers.siblings('.arrow-right').on("click", function () {
+            $swipers.data('swiper').swipeTo($swipers.data('swiper').activeIndex + 1);
+            return false;
+        });
+    });
     /*-----------------------------------------------------------------------------------*/
     /*	FITVIDS VIDEO
 	/*-----------------------------------------------------------------------------------*/
@@ -408,7 +409,7 @@ $(document).ready(function() {
                 type: 'inside'
             }
         },
-        beforeLoad: function() {
+        beforeLoad: function () {
             var el, id = $(this.element).data('title-id');
             if (id) {
                 el = $('#' + id);
@@ -422,11 +423,11 @@ $(document).ready(function() {
     /*	PROGRESS BAR
 	/*-----------------------------------------------------------------------------------*/
     $('.progress-list .progress .bar').progressBar({
-			shadow : false,
-			percentage : false,
-			animation : true,
-			height: 15
-	});
+        shadow: false,
+        percentage: false,
+        animation: true,
+        height: 15
+    });
     /*-----------------------------------------------------------------------------------*/
     /*	TABS
 	/*-----------------------------------------------------------------------------------*/
@@ -438,9 +439,9 @@ $(document).ready(function() {
     /*	TOGGLE
 	/*-----------------------------------------------------------------------------------*/
     $('.panel-group').find('.panel-default:has(".in")').addClass('panel-active');
-    $('.panel-group').on('shown.bs.collapse', function(e) {
+    $('.panel-group').on('shown.bs.collapse', function (e) {
         $(e.target).closest('.panel-default').addClass(' panel-active');
-    }).on('hidden.bs.collapse', function(e) {
+    }).on('hidden.bs.collapse', function (e) {
         $(e.target).closest('.panel-default').removeClass(' panel-active');
     });
     /*-----------------------------------------------------------------------------------*/
@@ -462,7 +463,7 @@ $(document).ready(function() {
     /*-----------------------------------------------------------------------------------*/
     /*	DATA REL
 	/*-----------------------------------------------------------------------------------*/
-    $('a[data-rel]').each(function() {
+    $('a[data-rel]').each(function () {
         $(this).attr('rel', $(this).data('rel'));
     });
     /*-----------------------------------------------------------------------------------*/
@@ -498,7 +499,7 @@ $(document).ready(function() {
     /* WIDTH CLASS
 	/*-----------------------------------------------------------------------------------*/
     assign_bootstrap_mode();
-    $(window).resize(function() {
+    $(window).resize(function () {
         assign_bootstrap_mode();
     });
     function assign_bootstrap_mode() {
@@ -525,8 +526,8 @@ $(document).ready(function() {
         accessToken: '1215763826.f1627ea.512d3a9b334a4c91ac2e83d4f4d9b291',
         resolution: 'low_resolution',
         template: '<div class="item"><figure class="icon-overlay"><a href="{{link}}"><img src="{{image}}" /></a></figure></div>',
-        after: function() {
-	        $('#instafeed .item .icon-overlay a').prepend('<span class="icn-more"></span>');
+        after: function () {
+            $('#instafeed .item .icon-overlay a').prepend('<span class="icn-more"></span>');
             var $portfoliogrid = $('.image-grid .isotope');
             $portfoliogrid.isotope({
                 itemSelector: '.item',
@@ -536,19 +537,19 @@ $(document).ready(function() {
                 },
                 layoutMode: 'masonry'
             });
-            $(window).resize(function() {
+            $(window).resize(function () {
                 $portfoliogrid.isotope({
                     masonry: {
                         columnWidth: $portfoliogrid.width() / 12
                     }
                 });
             });
-            $portfoliogrid.imagesLoaded(function() {
+            $portfoliogrid.imagesLoaded(function () {
                 $portfoliogrid.isotope('layout');
             });
         }
     });
-    $('#instafeed').each(function() {
+    $('#instafeed').each(function () {
         instagramFeed.run();
     });
     var instagramFeed2 = new Instafeed({
@@ -559,8 +560,8 @@ $(document).ready(function() {
         accessToken: '1215763826.f1627ea.512d3a9b334a4c91ac2e83d4f4d9b291',
         resolution: 'low_resolution',
         template: '<div class="item"><figure class="icon-overlay"><a href="{{link}}"><img src="{{image}}" /></a></figure></div>',
-        after: function() {
-	        $('#instafeed-widget .item .icon-overlay a').prepend('<span class="icn-more"></span>');
+        after: function () {
+            $('#instafeed-widget .item .icon-overlay a').prepend('<span class="icn-more"></span>');
             var $portfoliogrid = $('.image-grid .isotope');
             $portfoliogrid.isotope({
                 itemSelector: '.item',
@@ -570,19 +571,19 @@ $(document).ready(function() {
                 },
                 layoutMode: 'masonry'
             });
-            $(window).resize(function() {
+            $(window).resize(function () {
                 $portfoliogrid.isotope({
                     masonry: {
                         columnWidth: $portfoliogrid.width() / 12
                     }
                 });
             });
-            $portfoliogrid.imagesLoaded(function() {
+            $portfoliogrid.imagesLoaded(function () {
                 $portfoliogrid.isotope('layout');
             });
         }
     });
-    $('#instafeed-widget').each(function() {
+    $('#instafeed-widget').each(function () {
         instagramFeed2.run();
     });
     /*-----------------------------------------------------------------------------------*/
@@ -596,7 +597,7 @@ $(document).ready(function() {
             format: 'json',
             jsoncallback: '?'
         },
-        onLoad: function() {
+        onLoad: function () {
             $('.flickr-feed .item .icon-overlay a').prepend('<span class="icn-more"></span>');
         }
     });
@@ -612,14 +613,14 @@ $(document).ready(function() {
         },
         layoutMode: 'masonry'
     });
-    $(window).resize(function() {
+    $(window).resize(function () {
         $gridviewcol3.isotope({
             masonry: {
                 columnWidth: '.col-sm-6.col-md-4'
             }
         });
     });
-    $gridviewcol3.imagesLoaded(function() {
+    $gridviewcol3.imagesLoaded(function () {
         $gridviewcol3.isotope('layout');
     });
     /*-----------------------------------------------------------------------------------*/
@@ -634,14 +635,14 @@ $(document).ready(function() {
         },
         layoutMode: 'masonry'
     });
-    $(window).resize(function() {
+    $(window).resize(function () {
         $gridviewcol2.isotope({
             masonry: {
                 columnWidth: '.col-md-6.col-sm-12'
             }
         });
     });
-    $gridviewcol2.imagesLoaded(function() {
+    $gridviewcol2.imagesLoaded(function () {
         $gridviewcol2.isotope('layout');
     });
     /*-----------------------------------------------------------------------------------*/
@@ -656,32 +657,41 @@ $(document).ready(function() {
         },
         layoutMode: 'masonry'
     });
-    $(window).resize(function() {
+    $(window).resize(function () {
         $portfoliogrid.isotope({
             masonry: {
                 columnWidth: $portfoliogrid.width() / 12
             }
         });
     });
-    $portfoliogrid.imagesLoaded(function() {
+    $portfoliogrid.imagesLoaded(function () {
         $portfoliogrid.isotope('layout');
     });
+};
+
+$(document).ready(function () {
+    reload()
 });
 /*-----------------------------------------------------------------------------------*/
 /*	LOADING
 /*-----------------------------------------------------------------------------------*/
-$(window).load(function() {
+$(window).load(function () {
+    loadWindow()
+});
+
+function loadWindow() {
     $('#status').fadeOut();
     $('#preloader').delay(350).fadeOut('slow');
     $('#preloader .textload').delay(0).fadeOut('slow');
     $('body').delay(350).css({
         'overflow': 'visible'
     });
-});
+}
+
 /*-----------------------------------------------------------------------------------*/
 /*	FORM
 /*-----------------------------------------------------------------------------------*/
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     var myForm;
     myForm = new VanillaForm(document.querySelector("form.vanilla"));
 });
@@ -689,21 +699,21 @@ document.addEventListener("DOMContentLoaded", function() {
 /*	STICKY HEADER
 /*-----------------------------------------------------------------------------------*/
 function init() {
-"use strict";
-        window.addEventListener('scroll', function(e){
-            var distanceY = window.pageYOffset || document.documentElement.scrollTop,
-                shrinkOn = 100,
-                header = document.querySelector(".navbar");
-            if (distanceY > shrinkOn) {
-                classie.add(header,"fixed");
-            } else {
-                if (classie.has(header,"fixed")) {
-                    classie.remove(header,"fixed");
-                }
+    "use strict";
+    window.addEventListener('scroll', function (e) {
+        var distanceY = window.pageYOffset || document.documentElement.scrollTop,
+            shrinkOn = 100,
+            header = document.querySelector(".navbar");
+        if (distanceY > shrinkOn) {
+            classie.add(header, "fixed");
+        } else {
+            if (classie.has(header, "fixed")) {
+                classie.remove(header, "fixed");
             }
-        });
-    }
-    window.onload = init();
-$(window).resize(function() {
-	$('.offset').css('padding-top', $('.navbar').height() + 'px');        
+        }
+    });
+}
+window.onload = init();
+$(window).resize(function () {
+    $('.offset').css('padding-top', $('.navbar').height() + 'px');
 }); 

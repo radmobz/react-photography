@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import NavBar from './NavBar'
 import Main from './Main';
 
+
 //<Route exact path="/" component={Sample} />
 
 export default class Home extends Component {

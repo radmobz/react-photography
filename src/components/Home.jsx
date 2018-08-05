@@ -18,6 +18,7 @@ export default class Home extends Component {
         <div id="preloader"><div className="textload">Loading</div><div id="status"><div className="spinner"></div></div></div>
         <main className="body-wrapper">
           <NavBar openPortfolio={this.openPortfolio} openSlider={this.openSlider} />
+          <div className="offset"></div>
           <Main />
         </main>
       </div>

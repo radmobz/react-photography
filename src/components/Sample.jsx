@@ -158,7 +158,7 @@ class Sample extends React.Component {
   render() {
     if (this.state.photos.length > 0 && this.state.password.length > 0) {
       return (
-        <div style={{ paddingTop: '5%' }}>
+        <div>
 
           <Gallery
             photos={this.state.photos}

@@ -49,6 +49,7 @@ export default class Main extends Component {
         <div id="preloader"><div className="textload">Loading</div><div id="status"><div className="spinner"></div></div></div>
         <main className="body-wrapper">
           <NavBar />
+          <div className="offset"></div>
           <Sample />
         </main>
       </div>

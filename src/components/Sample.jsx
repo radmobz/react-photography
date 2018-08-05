@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { render } from "react-dom";
 import Gallery from "react-photo-gallery";
 import SelectedImage from "./SelectedImage";
@@ -12,7 +13,11 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-
+import DownloadIcon from '@material-ui/icons/CloudDownload'
+import DoneAllIcon from '@material-ui/icons/DoneAll'
+import Icon from '@material-ui/core/Icon';
+import IconButton from '@material-ui/core/IconButton';
+import { withRouter } from "react-router-dom";
 
 var zip = new JSZip();
 var count = 0;
@@ -24,17 +29,18 @@ const photos = [
 class Sample extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { photos: photos, selectAll: false, password: '', openedDialog: true };
+    this.state = { photos: photos, selectAll: false, password: '', clientId: '', openedDialog: true, errorMessage: '', openedErrorDialog: false };
     this.selectPhoto = this.selectPhoto.bind(this);
     this.toggleSelect = this.toggleSelect.bind(this);
     this.download = this.download.bind(this);
     this.handleSave = this.handleSave.bind(this);
-    this.handleChange = this.handleChange.bind(this)
+    this.handleChangePassword = this.handleChangePassword.bind(this)
+    this.handleChangeClienId = this.handleChangeClienId.bind(this)
   }
   getPictures = () => {
 
     const values = {
-      clientId: '0000000001',
+      clientId: this.state.clientId,
       password: this.state.password
     }
 
@@ -52,14 +58,23 @@ class Sample extends React.Component {
 
         let photos = this.state.photos
 
+        console.log(json)
+
         json.values.map(values => {
-          const photo = {
-            name: values.values.name.value,
-            src: 'data:image/png;base64, ' + values.values.base64.value,
-            width: 4,
-            height: 3
+
+          if (values.values.erreur !== undefined) {
+            this.setState({ openedErrorDialog: true, errorMessage: values.values.erreur.value })
           }
-          photos.push(photo)
+          else {
+
+            const photo = {
+              name: values.values.name.value,
+              src: 'data:image/png;base64, ' + values.values.base64.value,
+              width: 4,
+              height: 3
+            }
+            photos.push(photo)
+          }
         })
 
         console.log(photos)
@@ -69,13 +84,20 @@ class Sample extends React.Component {
 
       })
       .catch(function (error) {
-        console.log('erreur')
+        console.log(error)
+        this.setState({ openedErrorDialog: true, errorMessage: 'erreur' })
       })
   }
 
-  handleChange(event) {
+  handleChangePassword(event) {
     this.setState({
       password: event.target.value,
+    });
+  };
+
+  handleChangeClienId(event) {
+    this.setState({
+      clientId: event.target.value,
     });
   };
 
@@ -84,6 +106,14 @@ class Sample extends React.Component {
       this.setState({ openedDialog: false })
       this.getPictures()
     }
+  }
+
+  handleCloseError = () => {
+    this.setState({ openedErrorDialog: false, errorMessage: '', openedDialog: true, clientId: '', password: '' })
+  }
+
+  handleCloseIdentification = () => {
+    this.props.history.push("/");
   }
 
   selectPhoto(event, obj) {
@@ -128,40 +158,68 @@ class Sample extends React.Component {
   render() {
     if (this.state.photos.length > 0 && this.state.password.length > 0) {
       return (
-        <div>
-          <p>
-            <button className="toggle-select" onClick={this.toggleSelect}>
-              Select All
-          </button>
-          </p>
+        <div style={{ paddingTop: '5%' }}>
+
           <Gallery
             photos={this.state.photos}
             onClick={this.selectPhoto}
             ImageComponent={SelectedImage}
           />
           <p>
-            <button className="toggle-select" onClick={this.download}>
-              Download
-          </button>
+            <IconButton color="primary" onClick={this.toggleSelect} aria-label="Select ALL">
+              <DoneAllIcon />
+            </IconButton>
+            <IconButton color="primary" onClick={this.download} aria-label="Download">
+              <DownloadIcon />
+            </IconButton>
+
           </p>
         </div>
       );
+    }
+    else if (this.state.errorMessage.length > 0) {
+      return (<div>
+        <Dialog
+          open={this.state.openedErrorDialog}
+          onBackdropClick={this.handleCloseError}
+          onEscapeKeyDown={this.handleCloseError}
+          keepMounted
+        >
+          <DialogTitle>
+            {"Erreur"}
+          </DialogTitle>
+          <DialogContent>
+            Identification impossible !
+          </DialogContent>
+
+        </Dialog>
+
+      </div>)
     }
     else {
       return (<div>
         <Dialog
           open={this.state.openedDialog}
+          onBackdropClick={this.handleCloseIdentification}
+          onEscapeKeyDown={this.handleCloseIdentification}
           keepMounted
         >
           <DialogTitle>
-            {"Mot de passe ?"}
+            {"Identification"}
           </DialogTitle>
           <DialogContent>
             <TextField
               id="name"
+              label="N Client"
+              value={this.state.clientId}
+              onChange={this.handleChangeClienId}
+              margin="normal"
+            /> <br />
+            <TextField
+              id="name"
               label="Mot de passe"
               value={this.state.password}
-              onChange={this.handleChange}
+              onChange={this.handleChangePassword}
               margin="normal"
             />
           </DialogContent>
@@ -177,4 +235,4 @@ class Sample extends React.Component {
   }
 }
 
-export default Sample;
+export default withRouter(Sample);

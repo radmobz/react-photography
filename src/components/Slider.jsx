@@ -8,6 +8,10 @@ export default class Slider extends Component {
     }
 
 
+    componentDidMount() {
+        console.log('compo did mount')
+    }
+
     render() {
         return (
             <div>

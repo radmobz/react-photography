@@ -18,6 +18,18 @@ import DoneAllIcon from '@material-ui/icons/DoneAll'
 import Icon from '@material-ui/core/Icon';
 import IconButton from '@material-ui/core/IconButton';
 import { withRouter } from "react-router-dom";
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+
+
+function TabContainer(props) {
+  return (
+    <Typography component="div" style={{ padding: 8 * 3 }}>
+      {props.children}
+    </Typography>
+  );
+}
 
 var zip = new JSZip();
 var count = 0;
@@ -29,7 +41,7 @@ const photos = [
 class Sample extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { photos: photos, selectAll: false, password: '', clientId: '', openedDialog: true, errorMessage: '', openedErrorDialog: false };
+    this.state = { albums: [], photos: photos, selectAll: false, password: '', clientId: '', openedDialog: true, errorMessage: '', openedErrorDialog: false, value: 0, };
     this.selectPhoto = this.selectPhoto.bind(this);
     this.toggleSelect = this.toggleSelect.bind(this);
     this.download = this.download.bind(this);
@@ -37,11 +49,24 @@ class Sample extends React.Component {
     this.handleChangePassword = this.handleChangePassword.bind(this)
     this.handleChangeClienId = this.handleChangeClienId.bind(this)
   }
-  getPictures = () => {
+
+  handleChange = (event, value) => {
+    console.log(value)
+    this.unselectAll()
+    this.setState({ value });
+
+    if (this.state.photos[value] === undefined) {
+      this.getPictures(value)
+    }
+
+  };
+
+  getPictures = (albumId) => {
 
     const values = {
       clientId: this.state.clientId,
-      password: this.state.password
+      password: this.state.password,
+      albumId: this.state.albums[albumId]
     }
 
     const url = 'https://ged-api.herokuapp.com/v1/documents/search'
@@ -56,31 +81,77 @@ class Sample extends React.Component {
       .then(response => response.json())
       .then(json => {
 
-        let photos = this.state.photos
-
+        let photos = []
+        let photosState = this.state.photos
         console.log(json)
 
-        json.values.map(values => {
+        json.map(photo => {
 
-          if (values.values.erreur !== undefined) {
+          if (photo.erreur !== undefined) {
             this.setState({ openedErrorDialog: true, errorMessage: values.values.erreur.value })
           }
           else {
-
-            const photo = {
-              name: values.values.name.value,
-              src: 'data:image/png;base64, ' + values.values.base64.value,
+            const photoToAdd = {
+              id: photo.id,
+              path: photo.path,
+              name: photo.name,
+              src: 'https://ged-api.herokuapp.com/v1/documents/' + photo.id.split(';')[0],
               width: 4,
               height: 3
             }
-            photos.push(photo)
+            photos.push(photoToAdd)
           }
         })
 
+
+
         console.log(photos)
+        photosState.push(photos)
+        console.log(photosState)
+        //photos[0].src = 'data:image/png;base64, ' + json.values.base64.value
+        this.setState({ photos: photosState })
+
+      })
+      .catch(function (error) {
+        console.log(error)
+        //this.setState({ openedErrorDialog: true, errorMessage: 'erreur' })
+      })
+  }
+
+  getShootings = () => {
+
+    const values = {
+      clientId: this.state.clientId,
+      password: this.state.password
+    }
+
+    const url = 'https://ged-api.herokuapp.com/v1/documents/folders'
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(values)
+    })
+      .then(response => response.json())
+      .then(json => {
+
+        let albums = this.state.albums
+
+        console.log(json)
+
+        json.map(album => {
+          albums.push(album)
+        })
+
+        console.log(albums)
 
         //photos[0].src = 'data:image/png;base64, ' + json.values.base64.value
-        this.setState({ photos: photos })
+        this.setState({ albums: albums })
+
+        if (this.state.photos.length === 0)
+          this.getPictures(0)
 
       })
       .catch(function (error) {
@@ -104,7 +175,8 @@ class Sample extends React.Component {
   handleSave() {
     if (this.state.password.length > 0) {
       this.setState({ openedDialog: false })
-      this.getPictures()
+      //this.getPictures()
+      this.getShootings()
     }
   }
 
@@ -117,24 +189,78 @@ class Sample extends React.Component {
   }
 
   selectPhoto(event, obj) {
-    let photos = this.state.photos;
+    let photosState = this.state.photos;
+    let photos = photosState[this.state.value]
     photos[obj.index].selected = !photos[obj.index].selected;
-    this.setState({ photos: photos });
+    photosState[this.state.value] = photos
+    this.setState({ photos: photosState });
   }
+
+  unselectAll = () => {
+    let photosState = this.state.photos
+    let photos = this.state.photos[this.state.value]
+    photos = photos.map((photo, index) => {
+      return { ...photo, selected: false };
+    });
+    photosState[this.state.value] = photos
+    this.setState({ photos: photosState, selectAll: !this.state.selectAll });
+  }
+
   toggleSelect() {
-    let photos = this.state.photos.map((photo, index) => {
+    let photosState = this.state.photos
+    let photos = this.state.photos[this.state.value]
+    photos = photos.map((photo, index) => {
       return { ...photo, selected: !this.state.selectAll };
     });
-    this.setState({ photos: photos, selectAll: !this.state.selectAll });
+    photosState[this.state.value] = photos
+    this.setState({ photos: photosState, selectAll: !this.state.selectAll });
   }
   download(e) {
     let filesToDownload = [];
-    this.state.photos.map(photo => {
+    this.state.photos[this.state.value].map(photo => {
       if (photo.selected === true) {
-        filesToDownload.push(photo)
+        filesToDownload.push({
+          name: photo.name,
+          path: photo.path,
+          id: photo.id
+        })
       }
     })
-    filesToDownload.forEach(function (photoToZip) {
+
+    const request = {
+      clientId: this.state.clientId,
+      password: this.state.password,
+      albumId: this.state.albums[this.state.value],
+      photos: filesToDownload
+    }
+
+    console.log(request)
+
+    const url = 'https://ged-api.herokuapp.com/v1/documents/ask'
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(request)
+    })
+      .then(response => response.json())
+      .then(json => {
+
+        
+        console.log(json)
+
+
+      })
+      .catch(function (error) {
+        console.log(error)
+        this.setState({ openedErrorDialog: true, errorMessage: 'erreur' })
+      })
+
+    this.unselectAll()
+
+    /*filesToDownload.forEach(function (photoToZip) {
       var filename = photoToZip.name;
       // loading a file and add it in a zip file
       JSZipUtils.getBinaryContent(photoToZip.src, function (err, data) {
@@ -152,10 +278,54 @@ class Sample extends React.Component {
           });
         }
       });
-    });
+    });*/
 
   }
   render() {
+    const { value } = this.state;
+
+    if (this.state.albums.length > 0 && this.state.password.length > 0) {
+      return (
+        <div>
+          <Tabs value={value} onChange={this.handleChange}>
+            {
+              this.state.albums.map(album => {
+                return (<Tab label={album} key={album} />)
+              })
+            }
+          </Tabs>
+          {
+            
+            <div>
+              Album du {this.state.albums[value]}
+              {
+                this.state.photos[value] !== undefined && this.state.photos[value].length > 0 ? 
+              <div>
+              <Gallery
+                photos={this.state.photos[value]}
+                onClick={this.selectPhoto}
+                ImageComponent={SelectedImage}
+              />
+              <p>
+                <IconButton color="primary" onClick={this.toggleSelect} aria-label="Select ALL">
+                  <DoneAllIcon />
+                </IconButton>
+                <IconButton color="primary" onClick={this.download} aria-label="Download">
+                  <DownloadIcon />
+                </IconButton>
+
+              </p>
+              </div>
+              :
+              <div>Photos en cours de chargement </div>
+              }
+            </div>
+          }
+
+        </div>
+      )
+    }
+
     if (this.state.photos.length > 0 && this.state.password.length > 0) {
       return (
         <div>

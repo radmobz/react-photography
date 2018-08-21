@@ -4,8 +4,9 @@
   "description": "Delphine Photo React client",
   "main": "''",
   "scripts": {
+    "start": "node server.js",
     "build": "webpack -p --progress --profile --colors --config webpack.production.config.js",
-    "start": "webpack-dev-server --progress --profile --colors",
+    "dev": "webpack-dev-server --progress --profile --colors",
     "lint": "eslint --ext js --ext jsx src || exit 0",
     "dev": " webpack-dashboard -- webpack-dev-server",
     "test": "export NODE_ENV=test && jest"
